@@ -15,6 +15,7 @@ import (
 	minio "github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/minio/minio-go/v7/pkg/s3utils"
+	"github.com/rs/cors"
 )
 
 // S3 - A S3 implements FileSystem using the minio client
@@ -175,7 +176,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	mux := http.FileServer(&S3{client, bucket})
+	fs := http.FileServer(&S3{client, bucket})
+	mux := cors.Default().Handler(fs)
 	if letsEncrypt {
 		log.Printf("Started listening on https://%s\n", address)
 		certmagic.HTTPS([]string{address}, mux)
