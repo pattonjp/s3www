@@ -177,7 +177,7 @@ func main() {
 	}
 
 	fs := http.FileServer(&S3{client, bucket})
-	mux := cors.Default().Handler(fs)
+	mux := cors.AllowAll().Handler(fs)
 	if letsEncrypt {
 		log.Printf("Started listening on https://%s\n", address)
 		certmagic.HTTPS([]string{address}, mux)
